@@ -43,6 +43,7 @@ LEGACY_OTA_PARTITION_LAYOUTS = {
     "guition-esp32-p4-jc8012p4a1-v2": "partitions_16mb_card_images.csv",
     "guition-esp32-p4-jc8012p4a1-v3": "partitions_16mb_card_images.csv",
     "guition-esp32-s3-4848s040": "partitions_16mb_card_images.csv",
+    "panlee-esp32-s3-4848": "partitions_16mb_card_images.csv",
 }
 V3_SLUG = "guition-esp32-p4-jc8012p4a1-v3"
 LEGACY_OTA_PARTITION_ROWS = {
@@ -115,16 +116,16 @@ def test_zero_image_capacity_disables_all_image_card_pickers(profiles: dict[str,
 
 
 def test_s3_exposes_camera_and_media_cover_art(profiles: dict[str, dict]) -> None:
-    slug = "guition-esp32-s3-4848s040"
-    profile = profiles[slug]
-    disabled = set(web_config(profile).get("disabledCardTypes", []))
-    assert image_slot_capacity(profile) == 2, f"{slug}: S3 must expose exactly two shared image slots"
-    assert "image" not in disabled, f"{slug}: S3 Camera Cards must be available"
-    assert "media_cover_art" not in disabled, f"{slug}: S3 Media Cover Art must be available"
-    capability = public_device_capability(profile)
-    assert capability["imageCardTypes"] == ["image", "media_cover_art"], (
-        f"{slug}: public capability must expose Camera and Media Cover Art cards"
-    )
+    for slug in ("guition-esp32-s3-4848s040", "panlee-esp32-s3-4848"):
+        profile = profiles[slug]
+        disabled = set(web_config(profile).get("disabledCardTypes", []))
+        assert image_slot_capacity(profile) == 2, f"{slug}: S3 must expose exactly two shared image slots"
+        assert "image" not in disabled, f"{slug}: S3 Camera Cards must be available"
+        assert "media_cover_art" not in disabled, f"{slug}: S3 Media Cover Art must be available"
+        capability = public_device_capability(profile)
+        assert capability["imageCardTypes"] == ["image", "media_cover_art"], (
+            f"{slug}: public capability must expose Camera and Media Cover Art cards"
+        )
 
 
 def test_s3_exposes_weather_forecasts(profiles: dict[str, dict]) -> None:
@@ -515,32 +516,56 @@ def test_p4_crash_restart_preserves_safe_mode_counter() -> None:
 
 
 def test_square_s3_reapplies_clock_bar_after_screen_changes() -> None:
-    slug = "guition-esp32-s3-4848s040"
-    sensors = (ROOT / "devices" / slug / "device" / "sensors.yaml").read_text(encoding="utf-8")
-    device = (ROOT / "devices" / slug / "device" / "device.yaml").read_text(encoding="utf-8")
-    assert (
-        "grid_rebuild_all(slots, cfg, sp_cfgs, sp_ext, sp_ext2, sp_ext3, nullptr, nullptr, nullptr, nullptr,\n"
-        "            id(button_order).state,\n"
-        "            id(button_on_color).state,\n"
-        "            id(main_page)->obj);\n"
-        "      - script.execute: clock_bar_apply"
-    ) in sensors, "S3 grid refresh must rebuild safely and reapply the fixed clock bar"
-    assert (
-        "grid_phase2(slots, cfg, sp_cfgs, sp_ext, sp_ext2, sp_ext3,\n"
-        "              id(button_order).state,\n"
-        "              id(button_on_color).state,\n"
-        "              id(main_page)->obj);\n"
-        "        - script.execute: clock_bar_apply"
-    ) in sensors, "S3 boot setup must reapply the fixed clock bar after subpages are created"
-    assert (
-        "- script.execute: apply_screen_rotation\n"
-        "        - script.execute: clock_bar_apply"
-    ) in device, "S3 restored rotation must reapply the fixed clock bar"
-    assert (
-        "- script.execute: apply_screen_rotation\n"
-        "              - script.execute: clock_bar_apply"
-    ) in device, "S3 rotation changes must reapply the fixed clock bar"
+    for slug in ("guition-esp32-s3-4848s040", "panlee-esp32-s3-4848"):
+        sensors = (ROOT / "devices" / slug / "device" / "sensors.yaml").read_text(encoding="utf-8")
+        device = (ROOT / "devices" / slug / "device" / "device.yaml").read_text(encoding="utf-8")
+        assert (
+            "grid_rebuild_all(slots, cfg, sp_cfgs, sp_ext, sp_ext2, sp_ext3, nullptr, nullptr, nullptr, nullptr,\n"
+            "            id(button_order).state,\n"
+            "            id(button_on_color).state,\n"
+            "            id(main_page)->obj);\n"
+            "      - script.execute: clock_bar_apply"
+        ) in sensors, "S3 grid refresh must rebuild safely and reapply the fixed clock bar"
+        assert (
+            "grid_phase2(slots, cfg, sp_cfgs, sp_ext, sp_ext2, sp_ext3,\n"
+            "              id(button_order).state,\n"
+            "              id(button_on_color).state,\n"
+            "              id(main_page)->obj);\n"
+            "        - script.execute: clock_bar_apply"
+        ) in sensors, "S3 boot setup must reapply the fixed clock bar after subpages are created"
+        assert (
+            "- script.execute: apply_screen_rotation\n"
+            "        - script.execute: clock_bar_apply"
+        ) in device, "S3 restored rotation must reapply the fixed clock bar"
+        assert (
+            "- script.execute: apply_screen_rotation\n"
+            "              - script.execute: clock_bar_apply"
+        ) in device, "S3 rotation changes must reapply the fixed clock bar"
 
+
+def test_panlee_uses_its_gc9503v_ft63x6_hardware() -> None:
+    path = ROOT / "devices" / "panlee-esp32-s3-4848" / "device" / "device.yaml"
+    text = path.read_text(encoding="utf-8")
+    for required in (
+        "flash_size: 16MB",
+        "flash_chip: generic",
+        "execute_from_psram: true",
+        "mode: octal",
+        "speed: 80MHz",
+        "github://GiorgioAresu/esphome@mipi-rgb-gc9503v-enable-pin",
+        "model: ZX3D95CE01S-TR-4848",
+        "platform: ft63x6",
+        "interrupt_pin: 4",
+        "pin: GPIO5",
+        "frequency: 5kHz",
+        "number: 45",
+        "number: 48",
+        "sda: 15",
+        "scl: 6",
+    ):
+        assert required in text, f"Panlee device config is missing {required}"
+    for forbidden in ("GT911", "GUITION-4848S040", "GPIO38", "GPIO47", "relay_1"):
+        assert forbidden not in text, f"Panlee device config must not contain {forbidden}"
 
 def test_rotation_refresh_rebuilds_subpages() -> None:
     slugs = (
@@ -551,6 +576,7 @@ def test_rotation_refresh_rebuilds_subpages() -> None:
         "guition-esp32-p4-jc8012p4a1-v2",
         "esp32-p4-86",
         "guition-esp32-s3-4848s040",
+        "panlee-esp32-s3-4848",
     )
     for slug in slugs:
         sensors = (ROOT / "devices" / slug / "device" / "sensors.yaml").read_text(encoding="utf-8")
@@ -1057,6 +1083,7 @@ def main() -> int:
     test_upgrades_do_not_reset_saved_panel_config()
     test_p4_crash_restart_preserves_safe_mode_counter()
     test_square_s3_reapplies_clock_bar_after_screen_changes()
+    test_panlee_uses_its_gc9503v_ft63x6_hardware()
     test_rotation_refresh_rebuilds_subpages()
     test_restored_display_sensors_bind_without_reboot()
     test_seven_inch_width_compensation_rotates_with_screen()

@@ -402,7 +402,8 @@ inline Layout cover_art_layout(const std::string &slug, const std::string &rotat
     : Layout{800,1280,0,0,800,0,800,800,480,40,834,720,422,216,0,true};
   art_size = std::max(1, std::min(art_size, std::min(screen_width, screen_height)));
   int x = std::max(0, (screen_width - art_size) / 2), y = std::max(0, (screen_height - art_size) / 2);
-  const int title_max_lines = slug == "guition-esp32-s3-4848s040" || slug == "esp32-p4-86" ? 3 : 0;
+  const int title_max_lines = slug == "guition-esp32-s3-4848s040" ||
+      slug == "panlee-esp32-s3-4848" || slug == "esp32-p4-86" ? 3 : 0;
   return Layout{screen_width,screen_height,x,y,art_size,x,y,art_size,art_size,x,y,art_size,art_size,
                 title_height,art_size >= 700 ? 36 : 24,false,title_max_lines};
 }

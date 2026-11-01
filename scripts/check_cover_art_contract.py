@@ -222,8 +222,9 @@ int main() {
   auto square = cover_art_layout("esp32-p4-86", "0", 720, 720, 800, 495);
   assert(!square.split && square.art_size == 720 && square.panel_padding == 36);
   assert(playback_button_layout(square).size == 144);
-  for (const auto &slug : {"guition-esp32-s3-4848s040", "esp32-p4-86"}) {
-    const bool s3 = std::string(slug) == "guition-esp32-s3-4848s040";
+  for (const auto &slug : {"guition-esp32-s3-4848s040", "panlee-esp32-s3-4848", "esp32-p4-86"}) {
+    const bool s3 = std::string(slug) == "guition-esp32-s3-4848s040" ||
+                    std::string(slug) == "panlee-esp32-s3-4848";
     const int side = s3 ? 480 : 720;
     const int title_line = s3 ? 82 : 123;
     const int artist_line = s3 ? 47 : 70;
@@ -246,6 +247,7 @@ int main() {
   }
   for (const auto &layout : {ten, ten_v2, seven_v2, four, square,
        cover_art_layout("guition-esp32-s3-4848s040", "0", 480, 480, 480, 330),
+       cover_art_layout("panlee-esp32-s3-4848", "0", 480, 480, 480, 330),
        cover_art_layout("guition-esp32-p4-jc4880p443", "0", 480, 800, 480, 130)}) {
     const auto button = playback_button_layout(layout);
     assert(button.size >= 80 && button.size <= 144);

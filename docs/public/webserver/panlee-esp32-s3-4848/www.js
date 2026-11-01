@@ -1,0 +1,1 @@
+(()=>{const c=document.currentScript,u=new URL("../www.js",c.src),s=document.createElement("script");u.search=c.src.includes("?")?c.src.slice(c.src.indexOf("?")):"";u.searchParams.set("device","panlee-esp32-s3-4848");s.src=u.href;document.head.appendChild(s)})();

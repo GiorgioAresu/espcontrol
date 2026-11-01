@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "bundles": [
     {
-      "id": "2f8e23d230296ad6cb7f25d08f26eff5ebe08b3da590bd50ff370c3e12d00192",
-      "sha256": "2f8e23d230296ad6cb7f25d08f26eff5ebe08b3da590bd50ff370c3e12d00192",
-      "path": "bundles/2f8e23d230296ad6cb7f25d08f26eff5ebe08b3da590bd50ff370c3e12d00192/www.js",
+      "id": "0e145a88fe80096bc06ff7894eaf6c45b3a95d09e9ca04fe53d2417d95fc29dd",
+      "sha256": "0e145a88fe80096bc06ff7894eaf6c45b3a95d09e9ca04fe53d2417d95fc29dd",
+      "path": "bundles/0e145a88fe80096bc06ff7894eaf6c45b3a95d09e9ca04fe53d2417d95fc29dd/www.js",
       "deviceProfiles": [
         "guition-esp32-p4-jc1060p470",
         "guition-esp32-p4-jc1060p470-v2",
@@ -14,7 +14,8 @@
         "guition-esp32-p4-jc8012p4a1-v2",
         "guition-esp32-p4-jc8012p4a1-v3",
         "esp32-p4-86",
-        "guition-esp32-s3-4848s040"
+        "guition-esp32-s3-4848s040",
+        "panlee-esp32-s3-4848"
       ],
       "firmwareVersions": [
         "dev"
@@ -22,9 +23,9 @@
       "webAssetVersion": 2
     },
     {
-      "id": "2f8e23d230296ad6cb7f25d08f26eff5ebe08b3da590bd50ff370c3e12d00192",
-      "sha256": "2f8e23d230296ad6cb7f25d08f26eff5ebe08b3da590bd50ff370c3e12d00192",
-      "path": "bundles/2f8e23d230296ad6cb7f25d08f26eff5ebe08b3da590bd50ff370c3e12d00192/www.js",
+      "id": "0e145a88fe80096bc06ff7894eaf6c45b3a95d09e9ca04fe53d2417d95fc29dd",
+      "sha256": "0e145a88fe80096bc06ff7894eaf6c45b3a95d09e9ca04fe53d2417d95fc29dd",
+      "path": "bundles/0e145a88fe80096bc06ff7894eaf6c45b3a95d09e9ca04fe53d2417d95fc29dd/www.js",
       "deviceProfiles": [
         "guition-esp32-p4-jc1060p470",
         "guition-esp32-p4-jc1060p470-v2",
@@ -34,7 +35,8 @@
         "guition-esp32-p4-jc8012p4a1-v2",
         "guition-esp32-p4-jc8012p4a1-v3",
         "esp32-p4-86",
-        "guition-esp32-s3-4848s040"
+        "guition-esp32-s3-4848s040",
+        "panlee-esp32-s3-4848"
       ],
       "firmwareVersions": [
         "dev"
@@ -54,7 +56,8 @@
         "guition-esp32-p4-jc8012p4a1-v2",
         "guition-esp32-p4-jc8012p4a1-v3",
         "esp32-p4-86",
-        "guition-esp32-s3-4848s040"
+        "guition-esp32-s3-4848s040",
+        "panlee-esp32-s3-4848"
       ],
       "firmwareVersions": [
         "v2.10.0",
@@ -78,7 +81,8 @@
         "guition-esp32-p4-jc8012p4a1-v2",
         "guition-esp32-p4-jc8012p4a1-v3",
         "esp32-p4-86",
-        "guition-esp32-s3-4848s040"
+        "guition-esp32-s3-4848s040",
+        "panlee-esp32-s3-4848"
       ],
       "firmwareVersions": [
         "v2.10.0",
