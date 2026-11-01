@@ -1,6 +1,8 @@
 #pragma once
 
+#include <cstring>
 #include <initializer_list>
+#include <type_traits>
 #include <memory>
 #include <string>
 #include <utility>
@@ -241,13 +243,33 @@ inline void ha_reannounce_state_subscriptions() {
   ha_log_subscription_diagnostics("grid-reannounce");
 }
 
+// API request string fields are StringRef on stable ESPHome but ProgmemStringRef
+// (constructible only from pointer + length) on newer dev builds. Build either.
+// The referenced characters must outlive the request, as with StringRef.
+template <typename T>
+inline T ha_make_string_ref(const char *s, size_t len) {
+  if constexpr (std::is_constructible_v<T, const char *, size_t>) {
+    return T(s, len);
+  } else {
+    return T(s);
+  }
+}
+template <typename T>
+inline T ha_make_string_ref(const char *s) {
+  return ha_make_string_ref<T>(s, strlen(s));
+}
+template <typename T>
+inline T ha_make_string_ref(const std::string &s) {
+  return ha_make_string_ref<T>(s.c_str(), s.size());
+}
+
 inline bool ha_action_begin(esphome::api::HomeassistantActionRequest &req,
                             const char *service,
                             bool is_event,
                             size_t data_count,
                             uint32_t call_id = 0) {
   if (!ha_api_available() || service == nullptr || service[0] == '\0') return false;
-  req.service = decltype(req.service)(service);
+  req.service = ha_make_string_ref<decltype(req.service)>(service);
   req.is_event = is_event;
   if (call_id != 0) req.call_id = call_id;
   req.data.init(data_count);
@@ -258,24 +280,24 @@ inline void ha_action_add_data(esphome::api::HomeassistantActionRequest &req,
                                const char *key,
                                const char *value) {
   auto &kv = req.data.emplace_back();
-  kv.key = decltype(kv.key)(key ? key : "");
-  kv.value = decltype(kv.value)(value ? value : "");
+  kv.key = ha_make_string_ref<decltype(kv.key)>(key ? key : "");
+  kv.value = ha_make_string_ref<decltype(kv.value)>(value ? value : "");
 }
 
 inline void ha_action_add_data_template(esphome::api::HomeassistantActionRequest &req,
                                         const char *key,
                                         const char *value) {
   auto &kv = req.data_template.emplace_back();
-  kv.key = decltype(kv.key)(key ? key : "");
-  kv.value = decltype(kv.value)(value ? value : "");
+  kv.key = ha_make_string_ref<decltype(kv.key)>(key ? key : "");
+  kv.value = ha_make_string_ref<decltype(kv.value)>(value ? value : "");
 }
 
 inline void ha_action_add_variable(esphome::api::HomeassistantActionRequest &req,
                                    const char *key,
                                    const char *value) {
   auto &kv = req.variables.emplace_back();
-  kv.key = decltype(kv.key)(key ? key : "");
-  kv.value = decltype(kv.value)(value ? value : "");
+  kv.key = ha_make_string_ref<decltype(kv.key)>(key ? key : "");
+  kv.value = ha_make_string_ref<decltype(kv.value)>(value ? value : "");
 }
 
 inline void ha_action_add_entity(esphome::api::HomeassistantActionRequest &req,

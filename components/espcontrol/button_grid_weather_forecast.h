@@ -807,7 +807,7 @@ inline void request_weather_forecast_entity(const std::string &entity_id,
   req.wants_response = true;
   std::string response_template = weather_daily_find_source(entity_id)
     ? weather_daily_response_template(entity_id) : weather_forecast_response_template(entity_id);
-  req.response_template = decltype(req.response_template)(response_template);
+  req.response_template = ha_make_string_ref<decltype(req.response_template)>(response_template);
   ha_action_add_entity(req, entity_id);
   ha_action_add_data(req, "type", "daily");
   uint32_t generation = ha_subscription_generation();

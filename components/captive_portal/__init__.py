@@ -1,5 +1,4 @@
 import logging
-
 import esphome.codegen as cg
 from esphome.components import web_server_base, wifi
 from esphome.components.web_server_base import CONF_WEB_SERVER_BASE_ID
@@ -34,6 +33,7 @@ def AUTO_LOAD() -> list[str]:
 
 DEPENDENCIES = ["wifi"]
 CODEOWNERS = ["@esphome/core"]
+DOMAIN = "captive_portal"
 
 captive_portal_ns = cg.esphome_ns.namespace("captive_portal")
 CaptivePortal = captive_portal_ns.class_("CaptivePortal", cg.Component)

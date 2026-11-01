@@ -281,7 +281,10 @@ void ResetBoot::setup() {
   // the empty/default SSID, after the generated WiFiAP has been populated.
   auto ap = wifi->get_ap();
   if (!ap.get_ssid().empty() && ap.get_ssid() != esphome::App.get_friendly_name()) return;
-  const std::string mac = esphome::get_mac_address();
+  // get_mac_address() was removed from ESPHome dev; the buffer variant exists on all supported versions.
+  char mac_buf[esphome::MAC_ADDRESS_BUFFER_SIZE];
+  esphome::get_mac_address_into_buffer(mac_buf);
+  const std::string mac(mac_buf);
   std::string suffix;
   for (char c : mac) {
     if (c != ':' && c != '-') suffix.push_back(c);
