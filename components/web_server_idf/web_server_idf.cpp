@@ -1045,14 +1045,14 @@ void AsyncEventSource::try_send_nodefer(const char *message, size_t message_len,
   }
 }
 
-void AsyncEventSource::deferrable_send_state(void *source, const char *event_type,
+void AsyncEventSource::deferrable_send_state(void *source, bool detail_all,
                                              message_generator_t *message_generator) {
   // Skip if no connected clients to avoid unnecessary processing
   if (this->empty())
     return;
   for (auto *ses : this->sessions_) {
     if (ses->fd_.load() != 0) {  // Skip dead sessions
-      ses->deferrable_send_state(source, event_type, message_generator);
+      ses->deferrable_send_state(source, detail_all, message_generator);
     }
   }
 }
@@ -1393,26 +1393,18 @@ bool AsyncEventSourceResponse::try_send_nodefer(const char *message, size_t mess
   return this->fd_.load() != 0 && !this->close_requested_;
 }
 
-void AsyncEventSourceResponse::deferrable_send_state(void *source, const char *event_type,
+void AsyncEventSourceResponse::deferrable_send_state(void *source, bool detail_all,
                                                      message_generator_t *message_generator) {
   if (this->fd_.load() == 0 || this->close_requested_) {
     return;
   }
-  // allow all json "details_all" to go through before publishing bare state events, this avoids unnamed entries showing
-  // up in the web GUI and reduces event load during initial connect
-  if (!this->entities_iterator_.completed() && 0 != strcmp(event_type, "state_detail_all"))
+  // Let detail-all events pass while the initial entity listing is in progress.
+  // State-only events wait until the listing is complete, matching ESPHome 2026.11.
+  if (!detail_all && !this->entities_iterator_.completed())
     return;
 
-  if (source == nullptr)
+  if (source == nullptr || message_generator == nullptr)
     return;
-  if (event_type == nullptr)
-    return;
-  if (message_generator == nullptr)
-    return;
-
-  if (0 != strcmp(event_type, "state_detail_all") && 0 != strcmp(event_type, "state")) {
-    ESP_LOGE(TAG, "Can't defer non-state event");
-  }
 
   process_buffer_();
   process_deferred_queue_();
