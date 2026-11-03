@@ -73,9 +73,6 @@ external_components:
       path: components
     components: [espcontrol, captive_portal, web_server_idf, artwork_image]
     refresh: 1s
-  - source: github://GiorgioAresu/esphome@gc9503v
-    components: [mipi_rgb]
-    refresh: always
 
 espcontrol:
   id: espcontrol_app

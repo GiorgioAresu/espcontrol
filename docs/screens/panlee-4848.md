@@ -8,8 +8,6 @@ description:
 
 The Panlee 4848 profile targets a **480 × 480 square touchscreen** built around an **ESP32-S3**, the **GC9503V** MIPI RGB display controller and an **FT63x6** capacitive touchscreen. It provides a 3 × 3 home grid with **9 card slots** and supports **2 shared image cards** across the home page and subpages.
 
-This profile uses the GC9503V-enabled `mipi_rgb` component from the [`GiorgioAresu/esphome` `gc9503v` branch](https://github.com/GiorgioAresu/esphome/tree/gc9503v). That external component is declared by the firmware configuration.
-
 ## Card Grid
 
 <!--@include: ../generated/screens/panlee-4848-grid.md-->

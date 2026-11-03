@@ -552,7 +552,7 @@ def test_panlee_uses_its_gc9503v_ft63x6_hardware() -> None:
         "execute_from_psram: true",
         "mode: octal",
         "speed: 80MHz",
-        "github://GiorgioAresu/esphome@mipi-rgb-gc9503v-enable-pin",
+        "github://esphome/esphome@dev",
         "model: ZX3D95CE01S-TR-4848",
         "platform: ft63x6",
         "interrupt_pin: 4",
